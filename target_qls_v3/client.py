@@ -1,4 +1,4 @@
-"""QlsV2 base sink / client, built on the Hotglue SDK."""
+"""QLS v3 base sink / client, built on the Hotglue SDK."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from target_hotglue.client import HotglueSink
 
 
 class QlsV2Sink(HotglueSink):
-    """Base sink for the QLS v2 API.
+    """Base sink for the QLS v3 API.
 
     Provides shared HTTP helpers (auth, request_api, validate_response,
     clean_payload) that individual stream sinks inherit.

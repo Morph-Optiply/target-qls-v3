@@ -1,6 +1,6 @@
 # target-qls-v3
 
-`target-qls-v3` is a Singer target for the [QLS v2 API](https://api.pakketdienstqls.nl), built with the [Hotglue SDK](https://github.com/hotgluexyz/target-hotglue).
+`target-qls-v3` is a Singer target for the [QLS v3 API](https://api.pakketdienstqls.nl), built with the [Hotglue SDK](https://github.com/hotgluexyz/target-hotglue).
 
 ## Installation
 
@@ -22,9 +22,9 @@ The target requires the following configuration:
 
 | Property | Required | Description |
 |---|---|---|
-| `username` | ✅ | QLS v2 API username |
-| `password` | ✅ | QLS v2 API password |
-| `company_id` | ✅ | QLS v2 company ID, used to build the base URL |
+| `username` | ✅ | QLS v3 API username |
+| `password` | ✅ | QLS v3 API password |
+| `company_id` | ✅ | QLS v3 company ID, used to build the base URL |
 
 Example `config.json`:
 
@@ -41,7 +41,7 @@ Example `config.json`:
 This Singer target will automatically import any environment variables within the working directory's `.env` if the `--config=ENV` flag is provided:
 
 ```bash
-target-qls-v3 --config=ENV
+target-qlsv3 --config=ENV
 ```
 
 ## Usage
@@ -49,7 +49,7 @@ target-qls-v3 --config=ENV
 ### Running directly
 
 ```bash
-tap-your-source | target-qls-v3 --config config.json
+tap-your-source | target-qlsv3 --config config.json
 ```
 
 ### Running with Meltano
@@ -75,7 +75,7 @@ meltano elt tap-your-source target-qls-v3
 
 ### BuyOrders
 
-Writes purchase orders to the QLS v2 `purchase-orders` endpoint. The sink expects records with the following fields:
+Writes purchase orders to the QLS v3 `purchase-orders` endpoint. The sink expects records with the following fields:
 
 | Field | Required | Description |
 |---|---|---|
@@ -117,8 +117,8 @@ poetry run pytest
 ### Linting
 
 ```bash
-poetry run flake8 target_qlsv2
-poetry run black target_qlsv2
+poetry run flake8 target_qls_v3
+poetry run black target_qls_v3
 ```
 
 ## License
