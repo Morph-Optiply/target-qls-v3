@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import timedelta
 
-from target_qlsv2.client import QlsV2Sink
+from target_qls_v3.client import QlsV2Sink
 
 
 class BuyOrdersV2Sink(QlsV2Sink):
@@ -15,7 +15,7 @@ class BuyOrdersV2Sink(QlsV2Sink):
 
     def preprocess_record(self, record: dict, context: dict) -> dict | None:  # type: ignore[override]
         """Transform an incoming Singer record into the QLS v2 payload shape."""
-        dateoriginal = record["created_at"]
+        dateoriginal = self.parse_datetime(record["created_at"])
 
         # Skip weekends: push Saturday → Monday, Sunday → Monday
         if dateoriginal.weekday() == 5:   # Saturday

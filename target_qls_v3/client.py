@@ -125,6 +125,18 @@ class QlsV2Sink(HotglueSink):
     # Utility helpers                                                      #
     # ------------------------------------------------------------------ #
 
+
+    def parse_datetime(self, value):
+        if isinstance(value, datetime):
+            return value
+        if isinstance(value, str):
+            normalized = value.replace("Z", "+00:00")
+            try:
+                return datetime.fromisoformat(normalized)
+            except ValueError:
+                return datetime.strptime(value[:10], "%Y-%m-%d")
+        raise TypeError(f"Unsupported datetime value: {value!r}")
+
     def parse_stringified_object(self, value):
         if not isinstance(value, str):
             return value

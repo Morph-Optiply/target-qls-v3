@@ -9,7 +9,7 @@ from singer_sdk.sinks import Sink
 
 from target_hotglue.target import TargetHotglue
 
-from target_qlsv2 import sinks
+from target_qls_v3 import sinks
 
 SINK_TYPES = [sinks.BuyOrdersV2Sink, sinks.UpdateInventorySink]
 
