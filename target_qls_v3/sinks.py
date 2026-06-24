@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import timedelta
+from datetime import date, datetime, timedelta
 
 from target_qls_v3.client import QlsV2Sink
 
@@ -14,17 +14,32 @@ class BuyOrdersV2Sink(QlsV2Sink):
     endpoint = "purchase-orders"
     skipped_records: list[dict] = []
 
-    def preprocess_record(self, record: dict, context: dict) -> dict | None:  # type: ignore[override]
-        """Transform an incoming Singer record into the QLS v2 payload shape."""
-        dateoriginal = record["created_at"]
+    @staticmethod
+    def _estimated_arrival_date(created_at: datetime, today: date | None = None) -> date:
+        """Return a QLS-safe estimated arrival date.
+
+        QLS rejects deliveries with estimated_arrival equal to today or in the
+        past. The export ETL sends the Optiply BO delivery date in created_at,
+        so normalize any non-future date to tomorrow before applying the
+        existing weekend adjustment.
+        """
+        current_date = today or datetime.now(created_at.tzinfo).date()
+        estimated_date = created_at.date()
+
+        if estimated_date <= current_date:
+            estimated_date = current_date + timedelta(days=1)
 
         # Skip weekends: push Saturday → Monday, Sunday → Monday
-        if dateoriginal.weekday() == 5:   # Saturday
-            dateoriginal += timedelta(days=2)
-        elif dateoriginal.weekday() == 6:  # Sunday
-            dateoriginal += timedelta(days=1)
+        if estimated_date.weekday() == 5:   # Saturday
+            estimated_date += timedelta(days=2)
+        elif estimated_date.weekday() == 6:  # Sunday
+            estimated_date += timedelta(days=1)
 
-        dateformatted = dateoriginal.strftime("%Y-%m-%d")
+        return estimated_date
+
+    def preprocess_record(self, record: dict, context: dict) -> dict | None:  # type: ignore[override]
+        """Transform an incoming Singer record into the QLS v2 payload shape."""
+        dateformatted = self._estimated_arrival_date(record["created_at"]).strftime("%Y-%m-%d")
         deliveries = [{"estimated_arrival": dateformatted}]
 
         if "line_items" not in record:

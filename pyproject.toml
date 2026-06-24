@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "target-qls-v3"
-version = "0.1.4"
+version = "0.1.5"
 description = "`target-qls-v3` is a Singer target for QLS v3, built with the Hotglue SDK."
 authors = ["Optiply"]
 keywords = [
