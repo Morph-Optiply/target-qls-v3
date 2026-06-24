@@ -12,6 +12,7 @@ class BuyOrdersV2Sink(QlsV2Sink):
 
     name = "BuyOrders"
     endpoint = "purchase-orders"
+    skipped_records: list[dict] = []
 
     def preprocess_record(self, record: dict, context: dict) -> dict | None:  # type: ignore[override]
         """Transform an incoming Singer record into the QLS v2 payload shape."""
@@ -47,8 +48,27 @@ class BuyOrdersV2Sink(QlsV2Sink):
         record["id"] = str(record["id"])
         supplier_remote_id = record.get("supplier_remoteId")
 
+        if not supplier_remote_id:
+            reason = "Missing required supplier_remoteId"
+            skipped_record = {
+                "id": record["id"],
+                "supplier_name": record.get("supplier_name"),
+                "reason": reason,
+            }
+            self.skipped_records.append(skipped_record)
+            self.logger.error(
+                f"Skipping BuyOrder {record['id']}: {reason} "
+                f"(supplier_name={record.get('supplier_name')!r})"
+            )
+            return {
+                "_skip_record": True,
+                "_skip_id": record["id"],
+                "_skip_reason": reason,
+                "_skip_supplier_name": record.get("supplier_name"),
+            }
+
         payload = {
-            "suppliers": [supplier_remote_id] if supplier_remote_id else [],
+            "suppliers": [supplier_remote_id],
             "customer_title": str(record["id"]),
             "pre_order": 0,
             "purchase_order_products": purchase_order_products,
@@ -68,6 +88,13 @@ class BuyOrdersV2Sink(QlsV2Sink):
         """
         if not record:
             return None, True, {}
+
+        if record.get("_skip_record"):
+            return record.get("_skip_id"), False, {
+                "skipped": True,
+                "error": record.get("_skip_reason"),
+                "supplier_name": record.get("_skip_supplier_name"),
+            }
 
         state_updates: dict = {}
 

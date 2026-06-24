@@ -53,6 +53,28 @@ class TargetQlsV3(TargetHotglue):
             None,
         )
 
+    def _process_lines(self, file_input):  # type: ignore[override]
+        """Process input and report skipped BuyOrders after all records are handled."""
+        sinks.BuyOrdersV2Sink.skipped_records = []
+        try:
+            return super()._process_lines(file_input)
+        finally:
+            skipped_records = sinks.BuyOrdersV2Sink.skipped_records
+            if skipped_records:
+                skipped_ids = ", ".join(record["id"] for record in skipped_records)
+                self.logger.error(
+                    "Skipped %s BuyOrders because supplier_remoteId is missing: %s",
+                    len(skipped_records),
+                    skipped_ids,
+                )
+                for record in skipped_records:
+                    self.logger.error(
+                        "Skipped BuyOrder %s: %s (supplier_name=%r)",
+                        record["id"],
+                        record["reason"],
+                        record.get("supplier_name"),
+                    )
+
 
 if __name__ == "__main__":
     TargetQlsV3.cli()
