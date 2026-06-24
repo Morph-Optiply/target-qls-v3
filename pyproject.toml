@@ -1,20 +1,21 @@
 [tool.poetry]
-name = "target-qlsv2"
+name = "target-qls-v3"
 version = "0.1.0"
-description = "`target-qlsv2` is a Singer target for QLS v2, built with the Hotglue SDK."
-authors = ["Hotglue"]
+description = "`target-qls-v3` is a Singer target for QLS v3, built with the Hotglue SDK."
+authors = ["Optiply"]
 keywords = [
     "ELT",
-    "Qlsv2",
+    "QLS",
 ]
 license = "Apache 2.0"
+packages = [{ include = "target_qls_v3" }]
 
 [tool.poetry.dependencies]
 python = "<3.11,>=3.7.1"
 requests = "^2.25.1"
 singer-sdk = "^0.9.0"
 target-hotglue = "^0.0.2"
-backoff = "^2.2.1"
+backoff = ">=1.8.0,<2.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
@@ -29,11 +30,11 @@ isort = "^5.10.1"
 [tool.isort]
 profile = "black"
 multi_line_output = 3 # Vertical Hanging Indent
-src_paths = "target_qlsv2"
+src_paths = "target_qls_v3"
 
 [build-system]
 requires = ["poetry-core>=1.0.8"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-target-qlsv2 = 'target_qlsv2.target:TargetQlsV2.cli'
+target-qls-v3 = "target_qls_v3.target:TargetQlsV3.cli"

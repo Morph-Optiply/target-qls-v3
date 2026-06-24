@@ -117,8 +117,8 @@ poetry run pytest
 ### Linting
 
 ```bash
-poetry run flake8 target_qlsv2
-poetry run black target_qlsv2
+poetry run flake8 target_qls_v3
+poetry run black target_qls_v3
 ```
 
 ## License

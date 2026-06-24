@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-from typing import List, Type
+from typing import Type
 
 from singer_sdk import typing as th
 from singer_sdk.sinks import Sink
 
 from target_hotglue.target import TargetHotglue
 
-from target_qlsv2 import sinks
+from target_qls_v3 import sinks
 
 SINK_TYPES = [sinks.BuyOrdersV2Sink, sinks.UpdateInventorySink]
 
@@ -17,7 +17,7 @@ SINK_TYPES = [sinks.BuyOrdersV2Sink, sinks.UpdateInventorySink]
 class TargetQlsV3(TargetHotglue):
     """Singer target for QlsV2, built with the Hotglue SDK."""
 
-    name = "target-qlsv2"
+    name = "target-qls-v3"
 
     SINK_TYPES = [sinks.BuyOrdersV2Sink, sinks.UpdateInventorySink]
 
