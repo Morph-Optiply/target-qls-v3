@@ -45,9 +45,11 @@ class BuyOrdersV2Sink(QlsV2Sink):
         ]
 
         record["id"] = str(record["id"])
+        supplier_remote_id = record.get("supplier_remoteId")
+
         payload = {
-            "suppliers": [record["supplier_remoteId"]],
-            "customer_title": record["id"],
+            "suppliers": [supplier_remote_id] if supplier_remote_id else [],
+            "customer_title": str(record["id"]),
             "pre_order": 0,
             "purchase_order_products": purchase_order_products,
             "deliveries": deliveries,
