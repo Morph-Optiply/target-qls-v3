@@ -33,7 +33,9 @@ class BuyOrdersV2Sink(QlsV2Sink):
 
         purchase_order_products = [
             {
-                "remoteId": product["remoteId"],
+                # QLS purchase-order-product id. New order lines do not have
+                # this yet, and the export ETL may omit the key entirely.
+                "remoteId": product.get("remoteId"),
                 "product_payload": {
                     "amount": product["quantity"],
                     "fulfillment_product_id": product["product_remoteId"],
@@ -52,7 +54,7 @@ class BuyOrdersV2Sink(QlsV2Sink):
         }
 
         return {
-            "buy_order_remoteId": record["remoteId"],
+            "buy_order_remoteId": record.get("remoteId"),
             "payload": payload,
         }
 
