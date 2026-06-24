@@ -84,7 +84,7 @@ class BuyOrdersV2Sink(QlsV2Sink):
 
         payload = {
             "suppliers": [supplier_remote_id],
-            "customer_title": str(record["id"]),
+            "customer_title": record["id"],
             "pre_order": 0,
             "purchase_order_products": purchase_order_products,
             "deliveries": deliveries,
